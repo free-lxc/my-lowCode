@@ -2,7 +2,9 @@
   <div class="component-list">
     <div
       class="list"
-      draggable
+      draggable="true"
+      @dragstart="handleDragstart"
+      @dragend="handleDragend"
       v-for="(item, index) in componentList"
       :key="index"
       :data-index="index"
@@ -14,8 +16,19 @@
 </template>
 
 <script lang="ts" setup>
-import componentList from "../componentList/componentList.ts"
-window.console.log(componentList, "componentList")
+import { onMounted } from "vue"
+import componentList from "../componentList/componentList"
+const handleDragstart = (e: any) => {
+  window.console.log("拖拽开始了", e.target.dataset.index, "index")
+  e.dataTransfer.setData("currentIndex", e.target.dataset.index)
+}
+const handleDragend = (e: any) => {
+  e.preventDefault()
+}
+onMounted(() => {
+  console.log("组件已挂载，检查元素是否渲染完成")
+  console.log(componentList)
+})
 </script>
 
 <style lang="scss" scoped>
@@ -41,7 +54,7 @@ window.console.log(componentList, "componentList")
     align-items: center;
     justify-content: center;
     position: relative;
-
+    border: 1px solid black;
     &:active {
       cursor: grabbing;
     }
